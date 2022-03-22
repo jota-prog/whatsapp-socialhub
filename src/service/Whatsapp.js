@@ -7,11 +7,13 @@ class Whatsapp {
                 clientId: clientId
             })
         })
+        client.initialize();
     }
+    
 
     Auth() {
 
     }
 }
 
-export default Whatsapp;
+// export default Whatsapp;
