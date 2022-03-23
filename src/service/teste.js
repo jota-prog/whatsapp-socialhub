@@ -34,29 +34,7 @@ io.on('connection', (socket) => {
 
 io.on('connection', (socket) => {
     socket.on('message', (msg) => {
-        var message = {
-            mediaKey: undefined,
-            id: {
-              fromMe: false,
-              remote: `5521990685109@c.us`,
-              id: '1234567890ABCDEFGHIJ',
-              _serialized: `false_5521990685109@c.us_1234567890ABCDEFGHIJ`
-            },
-            ack: -1,
-            hasMedia: false,
-            body: 'Hello!',
-            type: 'chat',
-            timestamp: 1591482682,
-            from: `5521990685109@c.us`,
-            to: `5521990685109@c.us`,
-            author: undefined,
-            isForwarded: false,
-            broadcast: false,
-            fromMe: false,
-            hasQuotedMsg: false,
-            location: undefined,
-            mentionedIds: []
-        };
+
         console.log('MESSAGE RECEIVED', msg);
 
         client.emit('message_create', message);
