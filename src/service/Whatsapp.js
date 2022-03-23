@@ -16,4 +16,4 @@ class Whatsapp {
     }
 }
 
-// export default Whatsapp;
+export default Whatsapp;

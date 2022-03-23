@@ -1,5 +1,6 @@
 ### Node template
 # Logs
+.wwebjs_auth
 logs
 *.log
 npm-debug.log*
