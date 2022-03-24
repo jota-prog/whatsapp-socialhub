@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <link rel="stylesheet" href="./style.css"/>
     <title>Socket.IO chat</title>
     <style>
         body { margin: 0; padding-bottom: 3rem; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
@@ -13,15 +14,26 @@
         #messages { list-style-type: none; margin: 0; padding: 0; }
         #messages > li { padding: 0.5rem 1rem; }
         #messages > li:nth-child(odd) { background: #efefef; }
+
+        #chats { list-style-type: none; margin: 0; padding: 0; }
+        #chats > li { padding: 0.5rem 1rem; }
+        #chats > li:nth-child(odd) { background: #efefef; }
     </style>
 </head>
 
 <body>
-<div id="qrcode" align="center"></div>
-<ul id="messages"></ul>
-<form id="form" action="">
-    <input id="input" autocomplete="off" /><button>Send</button>
-</form>
+  <div id="qrcode" align="center"></div>
+  <section class="flex">
+    <div>
+      <ul id="messages"></ul>
+      <form id="form" action="">
+        <input id="input" autocomplete="off" /><button>Send</button>
+      </form>
+    </div>
+    <div>
+      <ul id="chats"></ul>
+    </div>
+  </section>
 
 <script src="/socket.io/socket.io.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
@@ -30,8 +42,10 @@
     var socket = io();
 
     var messages = document.getElementById('messages');
+    var chats = document.getElementById('chats');
     var form = document.getElementById('form');
     var input = document.getElementById('input');
+    var qrcode = document.getElementById('qrcode');
 
     form.addEventListener('submit', function(e) {
         e.preventDefault();
@@ -39,6 +53,13 @@
             socket.emit('message', input.value);
             input.value = '';
         }
+    });
+
+    socket.on('chat', function(chat) {
+        var item = document.createElement('li');
+        item.textContent = chat.name;
+        chats.appendChild(item);
+        window.scrollTo(0, document.body.scrollHeight);
     });
 
     socket.on('message', function(msg) {
@@ -49,14 +70,14 @@
     });
 
     socket.on('qrcode', function(qr) {
-        var qrcode = new QRCode(document.getElementById("qrcode"), {
+        var objqrcode = new QRCode(qrcode, {
             text: qr,
             width: 128,
             height: 128,
             colorDark : "#000000",
             colorLight : "#ffffff",
             correctLevel : QRCode.CorrectLevel.H
-});
+        });
     })
 </script>
 
