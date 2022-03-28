@@ -8,7 +8,7 @@ const io = new Server(server);
 const {Client, LocalAuth} = require('whatsapp-web.js')
 const client = new Client({
     authStrategy: new LocalAuth({
-        clientId: "262"
+        clientId: "263"
     })
 })
 // fire index
@@ -19,8 +19,8 @@ app.get('/', (req, res) => {
 // client events - initialize
 client.on('qr', (qr) => {
     // NOTE: This event will not be fired if a session is specified.
-    console.log('QR RECEIVED', qr);
     io.emit('qrcode', qr);
+    console.log('QR RECEIVED', qr);
 });
 
 client.on('authenticated', () => {
