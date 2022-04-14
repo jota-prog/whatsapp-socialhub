@@ -1,3 +1,4 @@
+const { randomInt } = require('crypto');
 const express = require('express');
 const app = express();
 const http = require('http');
@@ -8,7 +9,7 @@ const io = new Server(server);
 const {Client, LocalAuth} = require('whatsapp-web.js')
 const client = new Client({
     authStrategy: new LocalAuth({
-        clientId: "263"
+        clientId: randomInt(700)
     })
 })
 // fire index
