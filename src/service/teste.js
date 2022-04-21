@@ -38,6 +38,11 @@ client.on('ready', () => {
 });
 
 client.on('message', (msg) => {
+    if (msg.id.remote && msg.id.remote != 'status@broadcast') {
+        msg.getChat().then((resp) => {
+            io.emit('messageReceived', resp);
+        })
+    }
     console.log('MESSAGE RECEIVED', msg);
 });
 
@@ -51,11 +56,20 @@ io.on('connection', (socket) => {
 });
 
 io.on('connection', (socket) => {
-    socket.on('message', (msg) => {
-        console.log('MESSAGE SENDED', msg);
-        client.sendMessage('5521990685109@c.us', msg);
+    socket.on('message', (input) => {
+        console.log('MESSAGE SENDED', input);
+        client.sendMessage(input.contact, input.message).then((resp) => {
+            console.log('Message sended: ', resp);
+            io.emit('message', resp);
+        })
+        .catch(error => {
+            console.log('message error: ', error);
+            client.getState().then(resp => {
+                console.log('State: ', resp);
+            });
+        });
+        // client.sendMessage('5521990685109@c.us', msg);
 
-        io.emit('message', msg);
     });
 
     socket.on('getChats', () => {
