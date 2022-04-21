@@ -1,15 +1,20 @@
 const { randomInt } = require('crypto');
 const express = require('express');
 const app = express();
-const http = require('http');
-const server = http.createServer(app);
+const server = require('http').createServer(app);
 const {Server} = require("socket.io");
-const io = new Server(server);
+const io = new Server(server, {
+    cors: {
+        origin: "http://localhost:8080",
+        methods: ["GET", "POST"]
+    }
+});
 
 const {Client, LocalAuth} = require('whatsapp-web.js')
 const client = new Client({
     authStrategy: new LocalAuth({
-        clientId: randomInt(700)
+        clientId: 694
+        // clientId: randomInt(700)
     })
 })
 // fire index
@@ -30,12 +35,6 @@ client.on('authenticated', () => {
 
 client.on('ready', () => {
     console.log('READY');
-    client.getChats().then((resp) => {
-        resp.some((item, i) => {
-            io.emit('chat', item);
-            console.log(item);
-        })
-    });
 });
 
 client.on('message', (msg) => {
@@ -58,7 +57,24 @@ io.on('connection', (socket) => {
 
         io.emit('message', msg);
     });
+
+    socket.on('getChats', () => {
+        client.getChats().then((resp) => {
+            resp.some((item, i) => {
+                io.emit('chat', item);
+            })
+        });
+    })
+
+    socket.on('getChatId', (id) => {
+        client.getChatById(id).then((resp) => {
+            resp.fetchMessages({ limit: 10 }).then((resp) => {
+                io.emit('specificChat', resp);
+            })
+        });
+    })
 });
+
 
 server.listen(3000, () => {
     console.log('listening on *:3000');
